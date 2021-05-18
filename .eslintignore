@@ -1,0 +1,10 @@
+
+*.json.gpg
+*.json
+*.html
+dist
+docs
+deployment
+jest.config.js
+templates
+generate.js

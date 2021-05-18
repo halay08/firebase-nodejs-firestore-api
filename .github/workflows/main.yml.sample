@@ -1,0 +1,89 @@
+name: CI/CD
+
+# How to
+# Run `firebase login:ci` Then copy your token.
+# Open GitHub repository and go to Settings, then Secrets. Add your secret and name it FIREBASE_TOKEN.
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-develop:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Build
+        run: |
+          yarn --pure-lockfile
+          yarn build
+
+      - name: Create Service Account and ENV
+        run: |
+          echo $SERVICE_ACCOUNT > ./dist/serviceAccountKey.json
+          cat ./dist/serviceAccountKey.json
+          cp ./env.json.development ./env.json
+        shell: bash
+        env:
+          SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
+
+      - name: Activate Development Project
+        uses: w9jds/firebase-action@master
+        with:
+          args: use develop
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Set ENV
+        uses: w9jds/firebase-action@master
+        with:
+          args: functions:config:set env=\"$(cat env.json)\"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions --token ${{ secrets.FIREBASE_TOKEN }} --force --project develop
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
+          custom_payload: |
+            {
+              username: 'action-slack',
+              icon_emoji: ':octocat:',
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `${process.env.AS_WORKFLOW}\n${process.env.AS_JOB} (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} succeeded in ${process.env.AS_TOOK}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

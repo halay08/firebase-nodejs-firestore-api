@@ -1,0 +1,54 @@
+{
+    "database": {
+        "rules": "firebase.config/database.rules.json"
+    },
+    "firestore": {
+        "rules": "firebase.config/firestore.rules",
+        "indexes": "firebase.config/firestore.indexes.json"
+    },
+    "functions": {
+        "ignore": [
+            ".firebase/**",
+            ".firebaserc",
+            "firebase.json",
+            "**/node_modules/**",
+            "**/logs/**",
+            "**/src/**",
+            "**/public/**"
+        ],
+        "source": "."
+    },
+    "storage": {
+        "rules": "storage.rules"
+    },
+    "emulators": {
+        "auth": {
+            "host": "localhost",
+            "port": 9099
+        },
+        "functions": {
+            "host": "localhost",
+            "port": 5001
+        },
+        "firestore": {
+            "host": "localhost",
+            "port": 8080
+        },
+        "database": {
+            "host": "localhost",
+            "port": 9000
+        },
+        "hosting": {
+            "host": "localhost",
+            "port": 5000
+        },
+        "pubsub": {
+            "host": "localhost",
+            "port": 8085
+        },
+        "ui": {
+            "host": "localhost",
+            "enabled": true
+        }
+    }
+}

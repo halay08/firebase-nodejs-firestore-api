@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "types": ["reflect-metadata", "jest"],
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "outDir": "dist",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2019",
+        "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strictPropertyInitialization": false,
+        "baseUrl": "src",
+        "paths": {
+            "@/src/*": ["./*"],
+            "@/api/http/*": ["api/http/*"],
+            "@/app/*": ["app/*"],
+            "@/app": ["app"],
+            "@/domain/*": ["domain/*"],
+            "@/domain": ["domain"],
+            "@/services/*": ["app/services/*"],
+            "@/services": ["app/services"],
+            "@/infra/*": ["infra/*"],
+            "@/infra/repositories/*": ["infra/database/repositories/*"]
+        }
+    },
+    "compileOnSave": true,
+    "include": ["src", ".eslintrc.js"],
+    "exclude": ["**/*.json.gpg", "jest.config.js", "setupTest.js"]
+}

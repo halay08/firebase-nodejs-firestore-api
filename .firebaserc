@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "develop": "firebase-project-name",
+    "staging": "firebase-project-name",
+    "production": "firebase-project-name",
+    "default": "firebase-project-name"
+  }
+}

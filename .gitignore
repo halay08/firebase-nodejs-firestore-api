@@ -1,0 +1,30 @@
+# Compiled JavaScript files
+**/*.js
+**/*.js.map
+dist
+lib
+frontend
+
+# TypeScript v1 declaration files
+typings/
+
+# Node.js dependency directory
+node_modules/
+.runtimeconfig.json
+
+!generate.js
+!.eslintrc.js
+!*.config.js
+!.prettierrc.js
+!setupTest.js
+
+logs
+*.log
+
+# VS Code local history
+.history/
+*.code-workspace
+
+# Env file
+.env
+env.json
